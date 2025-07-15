@@ -1,18 +1,38 @@
-base_url: "https://www.dnb.com/business-directory/company-information.wholesale_trade.au.new_south_wales.html"
-max_pages: 100
-delay_between_requests: 1.5
-output_filename: "dnb_wholesale_nsw.csv"
+# Universal Web Scraper Configuration
+# Adapt these settings for different target websites
 
-# HTTP headers to mimic a real browser
-headers:
-  User-Agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-  Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
-  Accept-Language: "en-US,en;q=0.5"
-  Accept-Encoding: "gzip, deflate"
-  Connection: "keep-alive"
-  Upgrade-Insecure-Requests: "1"
+target:
+  base_url: "http://quotes.toscrape.com/"  # Scraping practice site with real content
+  max_pages: 3
+  delay_range: [1, 3]  # Random delay between requests in seconds
+  page_load_timeout: 15
 
-# CSS selectors for data extraction
-selectors:
-  company_links: 'a[href*="/business-directory/company-profiles."]'
-  pagination_next: 'a:contains("Next"), a:contains(">")'
+scraping:
+  selectors:
+    # CSS selectors for quotes.toscrape.com - a good test site
+    container: "div.quote"  # Each quote container
+    title: "span.text"      # Quote text
+    description: "small.author"  # Author name
+    link: "a[href*='/author/']"  # Link to author page
+    location: "span.text"   # We'll use quote text as location for demo
+    revenue: "small.author" # We'll use author as revenue for demo
+  
+  pagination:
+    url_pattern: "{base_url}page/{page_num}/"
+    start_page: 1
+
+proxy:
+  enabled: false  # Disabled for testing
+  max_failures: 3
+  rotation_frequency: 5  # Rotate proxy after N pages
+
+output:
+  filename: "scraped_data.csv"
+  directory: "data"
+
+# Anti-detection settings
+stealth:
+  random_delays: true
+  rotate_user_agents: true
+  block_images: true
+  headless_mode: true
